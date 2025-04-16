@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: inventory-service
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: inventory_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+    networks:
+      - backend
+
+  rabbitmq:
+    container_name: rabbitmq-dev
+    image: rabbitmq:3-management
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
