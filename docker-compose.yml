@@ -2,14 +2,14 @@ version: '3.8'
 
 services:
   postgres:
-    container_name: inventory-service
+    container_name: inventory-service-db
     image: postgres:latest
     environment:
       POSTGRES_DB: inventory_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - '5432:5432'
+      - '5433:5432'
     networks:
       - backend
 
