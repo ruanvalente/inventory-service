@@ -1,7 +1,5 @@
 package com.inventoryservice.ms.inventory_service.exceptions;
 
-import java.time.Instant;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,5 +22,17 @@ public class GlobalExceptionHandler {
         request.getRequestURI());
 
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+  }
+
+  @ExceptionHandler(InsufficientStockException.class)
+  public ResponseEntity<ApiError> handleInsufficientStock(
+      InsufficientStockException ex,
+      HttpServletRequest request) {
+    ApiError error = new ApiError(
+        HttpStatus.BAD_REQUEST.value(),
+        "Bad Request",
+        ex.getMessage(),
+        request.getRequestURI());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
   }
 }
