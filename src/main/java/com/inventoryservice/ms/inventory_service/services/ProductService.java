@@ -34,8 +34,7 @@ public class ProductService {
 
   public InventoryResponseDTO validateOrderItem(CreateOrderItemDTO item) {
     try {
-      Product product = productRepository.findById(item.productId())
-          .orElseThrow(() -> new ProductNotFoundException(item.productId()));
+      Product product = findById(item.productId());
 
       if (isInsufficientStock(item.quantity(), product.getAvailableQuantity())) {
         return createErrorResponse(
