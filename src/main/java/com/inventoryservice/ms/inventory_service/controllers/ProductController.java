@@ -1,7 +1,6 @@
 package com.inventoryservice.ms.inventory_service.controllers;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

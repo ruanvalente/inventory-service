@@ -19,6 +19,11 @@ public class RabbitMqConfig {
   }
 
   @Bean
+  public DirectExchange errorExchange() {
+    return new DirectExchange("error-exchange");
+  }
+
+  @Bean
   public DirectExchange inventoryExchange() {
     return new DirectExchange("inventory-exchange");
   }
