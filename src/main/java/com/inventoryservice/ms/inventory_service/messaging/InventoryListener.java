@@ -10,6 +10,7 @@ import com.inventoryservice.ms.inventory_service.entities.dto.RabbitMQMessageDTO
 import com.inventoryservice.ms.inventory_service.entities.dto.request.OrderRequestDTO;
 import com.inventoryservice.ms.inventory_service.entities.dto.response.ErrorMessageDTO;
 import com.inventoryservice.ms.inventory_service.entities.dto.response.InventoryResponseDTO;
+import com.inventoryservice.ms.inventory_service.entities.enums.ErrorType;
 import com.inventoryservice.ms.inventory_service.entities.enums.InventoryStatus;
 import com.inventoryservice.ms.inventory_service.exceptions.InsufficientStockException;
 import com.inventoryservice.ms.inventory_service.exceptions.ProductNotFoundException;
@@ -34,7 +35,7 @@ public class InventoryListener {
       for (var item : orderRequest.items()) {
         InventoryResponseDTO response = productService.validateOrderItem(item);
         if (response.status() == InventoryStatus.ERROR) {
-          publishErrorToQueue("VALIDATION_ERROR", response.message(), orderRequest);
+          publishErrorToQueue(ErrorType.VALIDATION_ERROR, response.message(), orderRequest);
           return response;
         }
       }
@@ -45,19 +46,19 @@ public class InventoryListener {
           null);
 
     } catch (ProductNotFoundException e) {
-      publishErrorToQueue("PRODUCT_NOT_FOUND", e.getMessage(), rabbitmqMessage.data());
+      publishErrorToQueue(ErrorType.PRODUCT_NOT_FOUND, e.getMessage(), rabbitmqMessage.data());
       return new InventoryResponseDTO(
           InventoryStatus.ERROR,
           e.getMessage(),
           null);
     } catch (InsufficientStockException e) {
-      publishErrorToQueue("INSUFFICIENT_STOCK", e.getMessage(), rabbitmqMessage.data());
+      publishErrorToQueue(ErrorType.INSUFFICIENT_STOCK, e.getMessage(), rabbitmqMessage.data());
       return new InventoryResponseDTO(
           InventoryStatus.ERROR,
           e.getMessage(),
           null);
     } catch (Exception e) {
-      publishErrorToQueue("GENERIC_ERROR", "Não foi possível processar o pedido: " + e.getMessage(),
+      publishErrorToQueue(ErrorType.GENERIC_ERROR, "Não foi possível processar o pedido: " + e.getMessage(),
           rabbitmqMessage.data());
       return new InventoryResponseDTO(
           InventoryStatus.ERROR,
@@ -66,7 +67,7 @@ public class InventoryListener {
     }
   }
 
-  private void publishErrorToQueue(String errorType, String message, OrderRequestDTO orderRequest) {
+  private void publishErrorToQueue(ErrorType errorType, String message, OrderRequestDTO orderRequest) {
     ErrorMessageDTO errorMessage = new ErrorMessageDTO(
         errorType,
         message,
