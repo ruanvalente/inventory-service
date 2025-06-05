@@ -1,7 +1,9 @@
 package com.inventoryservice.ms.inventory_service.controllers;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,15 +28,16 @@ public class ProductController {
   }
 
   @GetMapping
-  public ResponseEntity<List<Product>> listAll() {
-    List<Product> products = this.productService.listAll();
+  public ResponseEntity<Page<Product>> listAll(
+    @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+    Page<Product> products = this.productService.listAll(pageable);
 
     if (products.isEmpty()) {
       return ResponseEntity.noContent().build();
     }
 
     return ResponseEntity.ok(products);
-  }
+}
 
   @GetMapping("/{id}")
   public ResponseEntity<Product> findById(@PathVariable Long id) {

@@ -2,6 +2,8 @@ package com.inventoryservice.ms.inventory_service.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.inventoryservice.ms.inventory_service.entities.Product;
@@ -25,9 +27,9 @@ public class ProductService {
     this.productRepository = productRepository;
   }
 
-  public List<Product> listAll() {
-    return this.productRepository.findAll();
-  }
+ public Page<Product> listAll(Pageable pageable) {
+    return this.productRepository.findAll(pageable);
+}
 
   public Product findById(Long id) {
     return productRepository.findById(id)
