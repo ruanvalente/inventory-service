@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 
 import com.inventoryservice.ms.inventory_service.entities.Product;
 import com.inventoryservice.ms.inventory_service.entities.dto.CreateOrderItemDTO;
+import com.inventoryservice.ms.inventory_service.entities.dto.request.ProductRequestDTO;
 import com.inventoryservice.ms.inventory_service.entities.dto.response.InventoryResponseDTO;
 import com.inventoryservice.ms.inventory_service.entities.enums.InventoryStatus;
+import com.inventoryservice.ms.inventory_service.exceptions.AvaliableQuantityProductException;
 import com.inventoryservice.ms.inventory_service.exceptions.ProductNotFoundException;
 import com.inventoryservice.ms.inventory_service.repositories.ProductRepository;
 
@@ -67,5 +69,17 @@ public class ProductService {
 
   private InventoryResponseDTO createErrorResponse(String message) {
     return new InventoryResponseDTO(InventoryStatus.ERROR, message, null);
+  }
+
+  public Product create(ProductRequestDTO productDTO) {
+      if (productDTO.availableQuantity() <= 0) {
+          throw new AvaliableQuantityProductException();
+      }
+      Product product = new Product();
+      product.setName(productDTO.name());
+      product.setDescription(productDTO.description());
+      product.setAvailableQuantity(productDTO.availableQuantity());
+      product.setPrice(productDTO.price());
+      return this.productRepository.save(product);
   }
 }
