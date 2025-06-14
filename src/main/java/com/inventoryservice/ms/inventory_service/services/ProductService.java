@@ -28,9 +28,9 @@ public class ProductService {
     this.productRepository = productRepository;
   }
 
- public Page<Product> listAll(Pageable pageable) {
+  public Page<Product> listAll(Pageable pageable) {
     return this.productRepository.findAll(pageable);
-}
+  }
 
   public Product findById(Long id) {
     return productRepository.findById(id)
@@ -75,39 +75,39 @@ public class ProductService {
   }
 
   public Product create(ProductRequestDTO productDTO) {
-      if (productDTO.availableQuantity() <= 0) {
-          throw new AvaliableQuantityProductException();
-      }
-      Product product = new Product();
-      product.setName(productDTO.name());
-      product.setDescription(productDTO.description());
-      product.setAvailableQuantity(productDTO.availableQuantity());
-      product.setPrice(productDTO.price());
-      return this.productRepository.save(product);
+    if (productDTO.availableQuantity() <= 0) {
+      throw new AvaliableQuantityProductException();
+    }
+    Product product = new Product();
+    product.setName(productDTO.name());
+    product.setDescription(productDTO.description());
+    product.setAvailableQuantity(productDTO.availableQuantity());
+    product.setPrice(productDTO.price());
+    return this.productRepository.save(product);
   }
 
-public Product update(Long id, ProductUpdateRequestDTO productDTO) {
+  public Product update(Long id, ProductUpdateRequestDTO productDTO) {
     Product product = findById(id);
     if (product == null) {
-        throw new ProductNotFoundException(id);
+      throw new ProductNotFoundException(id);
     }
 
     if (productDTO.name() != null) {
-        product.setName(productDTO.name());
+      product.setName(productDTO.name());
     }
     if (productDTO.description() != null) {
-        product.setDescription(productDTO.description());
+      product.setDescription(productDTO.description());
     }
     if (productDTO.availableQuantity() != null) {
-        if (productDTO.availableQuantity() <= 0) {
-            throw new AvaliableQuantityProductException();
-        }
-        product.setAvailableQuantity(productDTO.availableQuantity());
+      if (productDTO.availableQuantity() <= 0) {
+        throw new AvaliableQuantityProductException();
+      }
+      product.setAvailableQuantity(productDTO.availableQuantity());
     }
     if (productDTO.price() != null) {
-        product.setPrice(productDTO.price());
+      product.setPrice(productDTO.price());
     }
 
     return this.productRepository.save(product);
-}
+  }
 }
