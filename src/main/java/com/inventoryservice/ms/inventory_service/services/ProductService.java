@@ -1,5 +1,7 @@
 package com.inventoryservice.ms.inventory_service.services;
 
+import java.util.Objects;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.inventoryservice.ms.inventory_service.entities.Product;
 import com.inventoryservice.ms.inventory_service.entities.dto.CreateOrderItemDTO;
 import com.inventoryservice.ms.inventory_service.entities.dto.request.ProductRequestDTO;
+import com.inventoryservice.ms.inventory_service.entities.dto.request.ProductUpdateRequestDTO;
 import com.inventoryservice.ms.inventory_service.entities.dto.response.InventoryResponseDTO;
 import com.inventoryservice.ms.inventory_service.entities.enums.InventoryStatus;
 import com.inventoryservice.ms.inventory_service.exceptions.AvaliableQuantityProductException;
@@ -82,4 +85,29 @@ public class ProductService {
       product.setPrice(productDTO.price());
       return this.productRepository.save(product);
   }
+
+public Product update(Long id, ProductUpdateRequestDTO productDTO) {
+    Product product = findById(id);
+    if (product == null) {
+        throw new ProductNotFoundException(id);
+    }
+
+    if (productDTO.name() != null) {
+        product.setName(productDTO.name());
+    }
+    if (productDTO.description() != null) {
+        product.setDescription(productDTO.description());
+    }
+    if (productDTO.availableQuantity() != null) {
+        if (productDTO.availableQuantity() <= 0) {
+            throw new AvaliableQuantityProductException();
+        }
+        product.setAvailableQuantity(productDTO.availableQuantity());
+    }
+    if (productDTO.price() != null) {
+        product.setPrice(productDTO.price());
+    }
+
+    return this.productRepository.save(product);
+}
 }

@@ -6,15 +6,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.inventoryservice.ms.inventory_service.entities.Product;
 import com.inventoryservice.ms.inventory_service.entities.dto.request.ProductRequestDTO;
+import com.inventoryservice.ms.inventory_service.entities.dto.request.ProductUpdateRequestDTO;
 import com.inventoryservice.ms.inventory_service.services.ProductService;
 
 @RestController
@@ -48,5 +44,13 @@ public class ProductController {
   public ResponseEntity<Product> create(@Validated @RequestBody ProductRequestDTO productDTO) {
     Product createdProduct = productService.create(productDTO);
     return ResponseEntity.status(201).body(createdProduct);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<Product> update(
+    @PathVariable Long id, 
+    @Validated @RequestBody ProductUpdateRequestDTO productDTO) {
+    Product updatedProduct = productService.update(id, productDTO);
+    return ResponseEntity.ok(updatedProduct);
   }
 }
