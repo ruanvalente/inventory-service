@@ -1,13 +1,18 @@
 package com.inventoryservice.ms.inventory_service.services;
 
-import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.inventoryservice.ms.inventory_service.entities.Product;
 import com.inventoryservice.ms.inventory_service.entities.dto.CreateOrderItemDTO;
+import com.inventoryservice.ms.inventory_service.entities.dto.request.ProductRequestDTO;
+import com.inventoryservice.ms.inventory_service.entities.dto.request.ProductUpdateRequestDTO;
 import com.inventoryservice.ms.inventory_service.entities.dto.response.InventoryResponseDTO;
 import com.inventoryservice.ms.inventory_service.entities.enums.InventoryStatus;
+import com.inventoryservice.ms.inventory_service.exceptions.AvaliableQuantityProductException;
 import com.inventoryservice.ms.inventory_service.exceptions.ProductNotFoundException;
 import com.inventoryservice.ms.inventory_service.repositories.ProductRepository;
 
@@ -23,8 +28,8 @@ public class ProductService {
     this.productRepository = productRepository;
   }
 
-  public List<Product> listAll() {
-    return this.productRepository.findAll();
+  public Page<Product> listAll(Pageable pageable) {
+    return this.productRepository.findAll(pageable);
   }
 
   public Product findById(Long id) {
@@ -68,4 +73,50 @@ public class ProductService {
   private InventoryResponseDTO createErrorResponse(String message) {
     return new InventoryResponseDTO(InventoryStatus.ERROR, message, null);
   }
+
+  public Product create(ProductRequestDTO productDTO) {
+    if (productDTO.availableQuantity() <= 0) {
+      throw new AvaliableQuantityProductException();
+    }
+    Product product = new Product();
+    product.setName(productDTO.name());
+    product.setDescription(productDTO.description());
+    product.setAvailableQuantity(productDTO.availableQuantity());
+    product.setPrice(productDTO.price());
+    return this.productRepository.save(product);
+  }
+
+  public Product update(Long id, ProductUpdateRequestDTO productDTO) {
+    Product product = findById(id);
+    if (product == null) {
+      throw new ProductNotFoundException(id);
+    }
+
+    Optional.ofNullable(productDTO.name())
+        .ifPresent(product::setName);
+    Optional.ofNullable(productDTO.description())
+        .ifPresent(product::setDescription);
+
+    if (isAvailableQuantityInvalid(productDTO.availableQuantity())) {
+      throw new AvaliableQuantityProductException();
+    }
+    product.setAvailableQuantity(productDTO.availableQuantity());
+
+    Optional.ofNullable(productDTO.price())
+        .ifPresent(product::setPrice);
+
+    return productRepository.save(product);
+  }
+
+  public void delete(Long id) {
+    Product product = findById(id);
+    if (product == null) {
+      throw new ProductNotFoundException(id);
+    }
+    productRepository.delete(product);
+  }
+
+ public boolean isAvailableQuantityInvalid(Integer availableQuantity) {
+    return availableQuantity != null && availableQuantity <= 0;
+}
 }
