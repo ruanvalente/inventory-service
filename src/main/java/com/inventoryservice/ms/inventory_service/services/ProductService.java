@@ -1,6 +1,6 @@
 package com.inventoryservice.ms.inventory_service.services;
 
-import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -92,22 +92,19 @@ public class ProductService {
       throw new ProductNotFoundException(id);
     }
 
-    if (productDTO.name() != null) {
-      product.setName(productDTO.name());
-    }
-    if (productDTO.description() != null) {
-      product.setDescription(productDTO.description());
-    }
-    if (productDTO.availableQuantity() != null) {
-      if (productDTO.availableQuantity() <= 0) {
-        throw new AvaliableQuantityProductException();
-      }
-      product.setAvailableQuantity(productDTO.availableQuantity());
-    }
-    if (productDTO.price() != null) {
-      product.setPrice(productDTO.price());
-    }
+    Optional.ofNullable(productDTO.name())
+        .ifPresent(product::setName);
+    Optional.ofNullable(productDTO.description())
+        .ifPresent(product::setDescription);
 
-    return this.productRepository.save(product);
+    if (productDTO.availableQuantity() != null && productDTO.availableQuantity() <= 0) {
+      throw new AvaliableQuantityProductException();
+    }
+    product.setAvailableQuantity(productDTO.availableQuantity());
+
+    Optional.ofNullable(productDTO.price())
+        .ifPresent(product::setPrice);
+
+    return productRepository.save(product);
   }
 }
