@@ -97,7 +97,7 @@ public class ProductService {
     Optional.ofNullable(productDTO.description())
         .ifPresent(product::setDescription);
 
-    if (productDTO.availableQuantity() != null && productDTO.availableQuantity() <= 0) {
+    if (isAvailableQuantityInvalid(productDTO.availableQuantity())) {
       throw new AvaliableQuantityProductException();
     }
     product.setAvailableQuantity(productDTO.availableQuantity());
@@ -107,4 +107,16 @@ public class ProductService {
 
     return productRepository.save(product);
   }
+
+  public void delete(Long id) {
+    Product product = findById(id);
+    if (product == null) {
+      throw new ProductNotFoundException(id);
+    }
+    productRepository.delete(product);
+  }
+
+ public boolean isAvailableQuantityInvalid(Integer availableQuantity) {
+    return availableQuantity != null && availableQuantity <= 0;
+}
 }
