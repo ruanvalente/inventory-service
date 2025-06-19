@@ -62,18 +62,6 @@ public class ProductService {
     }
   }
 
-  private InventoryResponseDTO createSuccessResponse(String message, Object data) {
-    return new InventoryResponseDTO(InventoryStatus.SUCCESS, message, data);
-  }
-
-  private boolean isInsufficientStock(int requestedQuantity, int availableQuantity) {
-    return requestedQuantity > availableQuantity;
-  }
-
-  private InventoryResponseDTO createErrorResponse(String message) {
-    return new InventoryResponseDTO(InventoryStatus.ERROR, message, null);
-  }
-
   public Product create(ProductRequestDTO productDTO) {
     if (productDTO.availableQuantity() <= 0) {
       throw new AvaliableQuantityProductException();
@@ -97,14 +85,18 @@ public class ProductService {
     Optional.ofNullable(productDTO.description())
         .ifPresent(product::setDescription);
 
-    if (isAvailableQuantityInvalid(productDTO.availableQuantity())) {
-      throw new AvaliableQuantityProductException();
-    }
-    product.setAvailableQuantity(productDTO.availableQuantity());
-
     Optional.ofNullable(productDTO.price())
         .ifPresent(product::setPrice);
 
+    return productRepository.save(product);
+  }
+
+  public Product updateQuantity(Long id, Integer availableQuantity) {
+    Product product = findById(id);
+    if (availableQuantity == null || availableQuantity <= 0) {
+      throw new AvaliableQuantityProductException();
+    }
+    product.setAvailableQuantity(availableQuantity);
     return productRepository.save(product);
   }
 
@@ -116,7 +108,19 @@ public class ProductService {
     productRepository.delete(product);
   }
 
- public boolean isAvailableQuantityInvalid(Integer availableQuantity) {
+  public boolean isAvailableQuantityInvalid(Integer availableQuantity) {
     return availableQuantity != null && availableQuantity <= 0;
-}
+  }
+
+  private InventoryResponseDTO createSuccessResponse(String message, Object data) {
+    return new InventoryResponseDTO(InventoryStatus.SUCCESS, message, data);
+  }
+
+  private boolean isInsufficientStock(int requestedQuantity, int availableQuantity) {
+    return requestedQuantity > availableQuantity;
+  }
+
+  private InventoryResponseDTO createErrorResponse(String message) {
+    return new InventoryResponseDTO(InventoryStatus.ERROR, message, null);
+  }
 }
