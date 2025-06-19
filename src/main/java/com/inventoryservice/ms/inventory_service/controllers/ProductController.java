@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import com.inventoryservice.ms.inventory_service.entities.Product;
 import com.inventoryservice.ms.inventory_service.entities.dto.request.ProductRequestDTO;
 import com.inventoryservice.ms.inventory_service.entities.dto.request.ProductUpdateRequestDTO;
+import com.inventoryservice.ms.inventory_service.entities.dto.request.UpdateQuantityDTO;
 import com.inventoryservice.ms.inventory_service.services.ProductService;
 
 @RestController
@@ -51,6 +52,12 @@ public class ProductController {
     @PathVariable Long id, 
     @Validated @RequestBody ProductUpdateRequestDTO productDTO) {
     Product updatedProduct = productService.update(id, productDTO);
+    return ResponseEntity.ok(updatedProduct);
+  }
+
+  @PatchMapping("/{id}/quantity")
+  public ResponseEntity<Product> updateQuantity(@PathVariable Long id, @RequestBody UpdateQuantityDTO dto) {
+    Product updatedProduct = productService.updateQuantity(id, dto.availableQuantity());
     return ResponseEntity.ok(updatedProduct);
   }
 
