@@ -65,7 +65,7 @@ Este microserviço é responsável pelo gerenciamento de **produtos** e **estoqu
 - [x] `GET /products/:id` – Consultar produto por ID
 - [x] `PUT /products/:id` – Atualizar dados do produto
 - [x] `GET /products` – Listar todos os produtos
-- `PATCH /products/:id/quantity` – Atualizar quantidade em estoque
+- [x] `PATCH /products/:id/quantity` – Atualizar quantidade em estoque
 
 ### Exemplo de Collection ⚠️ (Em breve...)
 
