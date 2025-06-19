@@ -57,7 +57,7 @@ Este microserviço é responsável pelo gerenciamento de **produtos** e **estoqu
 
 ## 🚀 Endpoints (Swagger)
 
-- Documentação disponível em: `http://localhost:8081/swagger-ui.html`
+- Documentação disponível em: `http://localhost:8081/swagger-ui/index.html#/`
 
 ### Exemplo de Endpoints:
 
