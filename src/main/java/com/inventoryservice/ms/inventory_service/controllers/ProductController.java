@@ -14,6 +14,11 @@ import com.inventoryservice.ms.inventory_service.entities.dto.request.ProductUpd
 import com.inventoryservice.ms.inventory_service.entities.dto.request.UpdateQuantityDTO;
 import com.inventoryservice.ms.inventory_service.services.ProductService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Products", description = "Product management operations")
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductController {
@@ -24,9 +29,10 @@ public class ProductController {
     this.productService = productService;
   }
 
+  @Operation(summary = "List all products with pagination and sorting")
   @GetMapping
   public ResponseEntity<Page<Product>> listAll(
-    @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+      @Parameter(description = "Pagination configuration and Sorting", example = "{\"page\":0,\"size\":10,\"sort\":[\"\"]}") @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
     Page<Product> products = this.productService.listAll(pageable);
 
     if (products.isEmpty()) {
@@ -34,35 +40,41 @@ public class ProductController {
     }
 
     return ResponseEntity.ok(products);
-}
+  }
 
+  @Operation(summary = "Find a product by ID")
   @GetMapping("/{id}")
-  public ResponseEntity<Product> findById(@PathVariable Long id) {
+  public ResponseEntity<Product> findById(@Parameter(description = "Product ID") @PathVariable Long id) {
     return ResponseEntity.ok(productService.findById(id));
   }
 
+  @Operation(summary = "Create a new product")
   @PostMapping
   public ResponseEntity<Product> create(@Validated @RequestBody ProductRequestDTO productDTO) {
     Product createdProduct = productService.create(productDTO);
     return ResponseEntity.status(201).body(createdProduct);
   }
 
+  @Operation(summary = "Update an existing product")
   @PutMapping("/{id}")
   public ResponseEntity<Product> update(
-    @PathVariable Long id, 
-    @Validated @RequestBody ProductUpdateRequestDTO productDTO) {
+      @Parameter(description = "Product ID") @PathVariable Long id,
+      @Validated @RequestBody ProductUpdateRequestDTO productDTO) {
     Product updatedProduct = productService.update(id, productDTO);
     return ResponseEntity.ok(updatedProduct);
   }
 
+  @Operation(summary = "Update product quantity by ID")
   @PatchMapping("/{id}/quantity")
-  public ResponseEntity<Product> updateQuantity(@PathVariable Long id, @RequestBody UpdateQuantityDTO dto) {
+  public ResponseEntity<Product> updateQuantity(@Parameter(description = "Product ID") @PathVariable Long id,
+      @RequestBody UpdateQuantityDTO dto) {
     Product updatedProduct = productService.updateQuantity(id, dto.availableQuantity());
     return ResponseEntity.ok(updatedProduct);
   }
 
+  @Operation(summary = "Remove a product by ID")
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
+  public ResponseEntity<Void> delete(@Parameter(description = "Product ID") @PathVariable Long id) {
     productService.delete(id);
     return ResponseEntity.noContent().build();
   }
