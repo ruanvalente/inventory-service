@@ -1,4 +1,4 @@
-package com.inventoryservice;
+package com.inventoryservice.ms.inventory_service.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
