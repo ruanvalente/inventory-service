@@ -28,7 +28,6 @@ import com.inventoryservice.ms.inventory_service.entities.enums.InventoryStatus;
 import com.inventoryservice.ms.inventory_service.exceptions.AvaliableQuantityProductException;
 import com.inventoryservice.ms.inventory_service.exceptions.ProductNotFoundException;
 import com.inventoryservice.ms.inventory_service.repositories.ProductRepository;
-import com.inventoryservice.ms.inventory_service.services.ProductService;
 
 public class ProductServiceTest {
     private Product product1;
