@@ -67,8 +67,6 @@ Este microserviço é responsável pelo gerenciamento de **produtos** e **estoqu
 - [x] `GET /products` – Listar todos os produtos
 - [x] `PATCH /products/:id/quantity` – Atualizar quantidade em estoque
 
-### Exemplo de Collection ⚠️ (Em breve...)
-
 ---
 
 ## 📩 Mensageria - RabbitMQ
