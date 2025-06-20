@@ -112,15 +112,15 @@ public class ProductService {
     return availableQuantity != null && availableQuantity <= 0;
   }
 
-  private InventoryResponseDTO createSuccessResponse(String message, Object data) {
+  public InventoryResponseDTO createSuccessResponse(String message, Object data) {
     return new InventoryResponseDTO(InventoryStatus.SUCCESS, message, data);
   }
 
-  private boolean isInsufficientStock(int requestedQuantity, int availableQuantity) {
+  public boolean isInsufficientStock(int requestedQuantity, int availableQuantity) {
     return requestedQuantity > availableQuantity;
   }
 
-  private InventoryResponseDTO createErrorResponse(String message) {
+  public InventoryResponseDTO createErrorResponse(String message) {
     return new InventoryResponseDTO(InventoryStatus.ERROR, message, null);
   }
 }
