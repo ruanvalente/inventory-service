@@ -10,6 +10,7 @@ import com.inventoryservice.ms.inventory_service.exceptions.ProductNotFoundExcep
 import com.inventoryservice.ms.inventory_service.services.ProductService;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,7 @@ public class ProductControllerTest {
 	}
 
 	@Test
+	@DisplayName("Test listing all products")
 	void testListAllProducts() throws Exception {
 		List<Product> products = List.of(product1, product2);
 		Page<Product> page = new PageImpl<>(products);
@@ -81,6 +83,7 @@ public class ProductControllerTest {
 	}
 
 	@Test
+	@DisplayName("Test getting a product by ID")
 	void testGetProductById() throws Exception {
 		Mockito.when(productService.findById(1L))
 				.thenReturn(product1);
@@ -91,6 +94,7 @@ public class ProductControllerTest {
 	}
 
 	@Test
+	@DisplayName("Test getting a product")
 	void testCreateProduct() throws Exception {
 		ProductRequestDTO dto = new ProductRequestDTO("Produto", "Descricao", 10, 99.99);
 
@@ -105,6 +109,7 @@ public class ProductControllerTest {
 	}
 
 	@Test
+	@DisplayName("Test updating a product")
 	void testUpdateProduct() throws Exception {
 		Long id = 1L;
 		ProductUpdateRequestDTO updateDTO = new ProductUpdateRequestDTO("Produto Atualizado", "Nova descrição",
@@ -131,6 +136,7 @@ public class ProductControllerTest {
 	}
 
 	@Test
+	@DisplayName("Test updating product quantity")
 	void testUpdateProductQuantity() throws Exception {
 		Long id = 1L;
 		int newQuantity = 99;
@@ -152,6 +158,7 @@ public class ProductControllerTest {
 	}
 
 	@Test
+	@DisplayName("Test deleting a product")
 	void testDeleteProduct() throws Exception {
 		Long productId = product1.getId();
 		Mockito.doNothing().when(productService).delete(productId);
@@ -163,6 +170,7 @@ public class ProductControllerTest {
 	}
 
 	@Test
+	@DisplayName("Test getting a product by ID - Not Found")
 	void testGetProductById_NotFound() throws Exception {
 		Long nonExistentId = 99L;
 		Mockito.when(productService.findById(nonExistentId))
@@ -177,6 +185,7 @@ public class ProductControllerTest {
 	}
 
 	@Test
+	@DisplayName("Test creating a product with invalid request")
 	void testCreateProduct_InvalidRequest() throws Exception {
 		ProductRequestDTO dto = new ProductRequestDTO("", "", -1, -10.0);
 
@@ -187,6 +196,7 @@ public class ProductControllerTest {
 	}
 
 	@Test
+	@DisplayName("Test updating a product with invalid request")
 	void testListAllProducts_Empty() throws Exception {
 		Page<Product> emptyPage = new PageImpl<>(List.of());
 		Mockito.when(productService.listAll(any())).thenReturn(emptyPage);

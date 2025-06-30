@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.data.domain.Page;
@@ -56,6 +57,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test getting all products")
     void testGetAllProducts() {
         List<Product> products = List.of(product1, product2);
         Pageable pageable = Pageable.unpaged();
@@ -70,6 +72,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test getting a product by ID")
     void testGetProductById() {
         when(productRepository.findById(product1.getId())).thenReturn(Optional.of(product1));
 
@@ -82,6 +85,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test getting a product by ID - Not Found")
     void testFindById_ProductNotFound() {
         when(productRepository
                 .findById(2L))
@@ -91,6 +95,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test creating a product")
     void testCreateProduct_Success() {
         ProductRequestDTO dto = new ProductRequestDTO("Produto", "Descricao", 10, 99.99);
         Product savedProduct = new Product();
@@ -106,6 +111,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test creating a product")
     void testUpdateProduct_Success() {
         ProductUpdateRequestDTO productUpdateDTO = new ProductUpdateRequestDTO("Produto Atualizado",
                 "Descricao Atualizada", 49.99);
@@ -122,6 +128,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test updating a product not found")
     void testUpdateProduct_ProductNotFound() {
         ProductUpdateRequestDTO productUpdateDTO = new ProductUpdateRequestDTO("Produto Atualizado",
                 "Descricao Atualizada", 49.99);
@@ -132,6 +139,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test remove a produtct")
     void testRemoveProduct_Success() {
         when(productRepository.findById(1L))
                 .thenReturn(Optional.of(product1))
@@ -143,6 +151,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test updating product quantity")
     void testUpdateQuantity_Success() {
         when(productRepository.findById(1L)).thenReturn(Optional.of(product1));
         when(productRepository.save(ArgumentMatchers.any(Product.class))).thenReturn(product1);
@@ -154,6 +163,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test updating product quantity invalid")
     void testCreateProduct_InvalidQuantity() {
         ProductRequestDTO dto = new ProductRequestDTO("Produto", "Descricao", 0, 99.99);
 
@@ -161,6 +171,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test validating order item - Success")
     void testValidateOrderItem_Success() {
         CreateOrderItemDTO item = new CreateOrderItemDTO(product1.getId(), 10, null);
         when(productRepository.findById(product1.getId())).thenReturn(Optional.of(product1));
@@ -174,6 +185,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test validating order item - Insufficient Stock")
     void testValidateOrderItem_InsufficientStock() {
         CreateOrderItemDTO item = new CreateOrderItemDTO(product1.getId(), 200, null);
         when(productRepository.findById(product1.getId())).thenReturn(Optional.of(product1));
@@ -187,6 +199,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test validating order item - Product Not Found")
     void testValidateOrderItem_ProductNotFound() {
         long invalidId = 999L;
         CreateOrderItemDTO item = new CreateOrderItemDTO(invalidId, 1, null);
@@ -201,6 +214,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test product is insufficient stock")
     void testIsInsufficientStock() {
         assertEquals(true, productService.isInsufficientStock(5, 3));
         assertEquals(false, productService.isInsufficientStock(2, 5));
@@ -209,6 +223,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test product is available quantity invalid")
     void testIsAvailableQuantityInvalid() {
         assertEquals(true, productService.isAvailableQuantityInvalid(0));
         assertEquals(true, productService.isAvailableQuantityInvalid(-1));
@@ -217,6 +232,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test creating success response - Method")
     void testCreateSuccessResponse() {
         String message = String.format("Produto ID %d validado com sucesso", product1.getId());
         Product data = product1;
@@ -230,6 +246,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Test creating error response - Method")
     void testCreateErrorResponse() {
         String errorMsg = String.format("Erro ao validar o pedido: %s. Tente novamente mais tarde.",
                 "Falha inesperada");
